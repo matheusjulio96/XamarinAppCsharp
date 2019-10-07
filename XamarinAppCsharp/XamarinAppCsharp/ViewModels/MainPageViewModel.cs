@@ -1,7 +1,9 @@
 ﻿using MVVMCoffee.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Text;
 using Xamarin.Forms;
 using XamarinAppCsharp.Models;
@@ -42,6 +44,16 @@ namespace XamarinAppCsharp.ViewModels
                 await Application.Current.MainPage.Navigation.PushAsync(new DetailPage(detailViewModel));
                 SelectedNote = null;
             });
+
+            GetCommand = new Command(async () =>
+            {
+                HttpClient client = new HttpClient();
+                string queryString = $"http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+                var resultHorario = await client.GetAsync(queryString);
+                var strHorario = resultHorario.Content.ReadAsStringAsync().Result;
+                var horarioBloqueioCheckin = JsonConvert.DeserializeObject<Timezone>(strHorario);
+                NoteText = horarioBloqueioCheckin.datetime.ToString();
+            });
         }
 
         public ObservableCollection<NoteModel> Notes { get; set; }
@@ -68,5 +80,11 @@ namespace XamarinAppCsharp.ViewModels
         public Command SaveNoteCommand { get; }
         public Command EraseNotesCommand { get; }
         public Command NoteSelectedCommand { get; }
+        public Command GetCommand { get; }
+
+        class Timezone
+        {
+            public DateTime datetime { get; set; }
+        }
     }
 }

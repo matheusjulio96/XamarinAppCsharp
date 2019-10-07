@@ -11,11 +11,13 @@ namespace XamarinAppCsharp
     {
         Image xamagonImage;
         Editor noteEditor;
-        Button saveButton, deleteButton;
+        Button saveButton, deleteButton, getButton;
 
         public MainPage()
         {
             BackgroundColor = Color.PowderBlue;
+
+            int columnCount = 3;
 
             Title = "Notes";
 
@@ -52,6 +54,15 @@ namespace XamarinAppCsharp
             };
             deleteButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.EraseNotesCommand));
 
+            getButton = new Button
+            {
+                Text = "Get",
+                TextColor = Color.White,
+                BackgroundColor = Color.LightBlue,
+                Margin = new Thickness(10)
+            };
+            getButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.GetCommand));
+
             var collectionView = new CollectionView
             {
                 ItemTemplate = new NotesTemplate(),
@@ -68,6 +79,7 @@ namespace XamarinAppCsharp
                 ColumnDefinitions =
                 {
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
                 },
                 RowDefinitions =
@@ -80,16 +92,17 @@ namespace XamarinAppCsharp
             };
 
             grid.Children.Add(xamagonImage, 0, 0);
-            Grid.SetColumnSpan(xamagonImage, 2);
+            Grid.SetColumnSpan(xamagonImage, columnCount);
 
             grid.Children.Add(noteEditor, 0, 1);
-            Grid.SetColumnSpan(noteEditor, 2);
+            Grid.SetColumnSpan(noteEditor, columnCount);
 
             grid.Children.Add(saveButton, 0, 2);
             grid.Children.Add(deleteButton, 1, 2);
+            grid.Children.Add(getButton, 2, 2);
 
             grid.Children.Add(collectionView, 0, 3);
-            Grid.SetColumnSpan(collectionView, 2);
+            Grid.SetColumnSpan(collectionView, columnCount);
 
             Content = grid;
         }
