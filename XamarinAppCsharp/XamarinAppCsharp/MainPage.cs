@@ -10,12 +10,13 @@ namespace XamarinAppCsharp
     {
         Image xamagonImage;
         Editor noteEditor;
-        Label textLabel;
         Button saveButton, deleteButton;
 
         public MainPage()
         {
             BackgroundColor = Color.PowderBlue;
+
+            Title = "Notes";
 
             BindingContext = new MainPageViewModel();
 
@@ -30,7 +31,7 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.White,
                 Margin = new Thickness(10)
             };
-            noteEditor.SetBinding(Editor.TextProperty, "NoteText");
+            noteEditor.SetBinding(Editor.TextProperty, nameof(MainPageViewModel.NoteText));
 
             saveButton = new Button
             {
@@ -39,7 +40,7 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.Green,
                 Margin = new Thickness(10)
             };
-            saveButton.SetBinding(Button.CommandProperty, "SaveNoteCommand");
+            saveButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SaveNoteCommand));
 
             deleteButton = new Button
             {
@@ -48,13 +49,16 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.Red,
                 Margin = new Thickness(10)
             };
-            deleteButton.SetBinding(Button.CommandProperty, "EraseNotesCommand");
+            deleteButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.EraseNotesCommand));
 
             var collectionView = new CollectionView
             {
-                ItemTemplate = new NotesTemplate()
+                ItemTemplate = new NotesTemplate(),
+                SelectionMode = SelectionMode.Single
             };
-            collectionView.SetBinding(ItemsView.ItemsSourceProperty, "NotesCollection");
+            collectionView.SetBinding(CollectionView.ItemsSourceProperty, nameof(MainPageViewModel.Notes));
+            collectionView.SetBinding(CollectionView.SelectedItemProperty, nameof(MainPageViewModel.SelectedNote));
+            collectionView.SetBinding(CollectionView.SelectionChangedCommandProperty, nameof(MainPageViewModel.NoteSelectedCommand));
 
             var grid = new Grid
             {
@@ -87,17 +91,6 @@ namespace XamarinAppCsharp
             Grid.SetColumnSpan(collectionView, 2);
 
             Content = grid;
-        }
-
-        private void DeleteButton_Clicked(object sender, EventArgs e)
-        {
-            textLabel.Text = "";
-            noteEditor.Text = "";
-        }
-
-        private void SaveButton_Clicked(object sender, EventArgs e)
-        {
-            textLabel.Text = noteEditor.Text;
         }
     }
 

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using Xamarin.Forms;
 using XamarinAppCsharp.Models;
+using XamarinAppCsharp.Views;
 
 namespace XamarinAppCsharp.ViewModels
 {
@@ -12,25 +13,38 @@ namespace XamarinAppCsharp.ViewModels
     {
         public MainPageViewModel()
         {
-            NotesCollection = new ObservableCollection<NoteModel>();
+            Notes = new ObservableCollection<NoteModel>();
 
             EraseNotesCommand = new Command(() =>
             {
                 NoteText = string.Empty;
-                NotesCollection.Clear();
+                Notes.Clear();
             });
             SaveNoteCommand = new Command(() =>
             {
-                var note = new NoteModel
+                Notes.Add(new NoteModel
                 {
                     Text = NoteText
-                };
-                NotesCollection.Add(note);
+                });
                 NoteText = string.Empty;
+            },
+            () => !string.IsNullOrEmpty(NoteText));
+
+            NoteSelectedCommand = new Command(async () =>
+            {
+                if (SelectedNote is null)
+                    return;
+
+                var detailViewModel = new DetailPageViewModel
+                {
+                    NoteText = SelectedNote.Text
+                };
+                await Application.Current.MainPage.Navigation.PushAsync(new DetailPage(detailViewModel));
+                SelectedNote = null;
             });
         }
 
-        public ObservableCollection<NoteModel> NotesCollection { get; set; }
+        public ObservableCollection<NoteModel> Notes { get; set; }
 
         string noteText;
 
@@ -40,11 +54,19 @@ namespace XamarinAppCsharp.ViewModels
             set
             {
                 SetProperty(ref noteText, value, nameof(NoteText));
+                SaveNoteCommand.ChangeCanExecute();
             }
+        }
+        NoteModel selectedNote;
+        public NoteModel SelectedNote { get => selectedNote; 
+            set {
+                SetProperty(ref selectedNote, value, nameof(SelectedNote));
+            } 
         }
 
 
         public Command SaveNoteCommand { get; }
         public Command EraseNotesCommand { get; }
+        public Command NoteSelectedCommand { get; }
     }
 }
