@@ -52,23 +52,7 @@ namespace XamarinAppCsharp
 
             var collectionView = new CollectionView
             {
-                ItemTemplate = new DataTemplate(() =>
-                {
-                    StackLayout layout = new StackLayout();
-                    layout.Padding = new Thickness(10, 10);
-
-                    Frame frame = new Frame();
-
-                    Label label = new Label();
-                    label.SetBinding(Label.TextProperty, "Text"); //property of NoteModel
-                    label.FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label));
-                    label.VerticalTextAlignment = TextAlignment.Center;
-
-                    frame.Content = label;
-                    layout.Children.Add(frame);
-
-                    return layout;
-                })
+                ItemTemplate = new NotesTemplate()
             };
             collectionView.SetBinding(ItemsView.ItemsSourceProperty, "NotesCollection");
 
@@ -114,6 +98,31 @@ namespace XamarinAppCsharp
         private void SaveButton_Clicked(object sender, EventArgs e)
         {
             textLabel.Text = noteEditor.Text;
+        }
+    }
+
+    internal class NotesTemplate : DataTemplate
+    {
+        public NotesTemplate() : base(typeof(NoteLayout))
+        {
+        }
+    }
+
+    internal class NoteLayout : StackLayout
+    {
+        public NoteLayout()
+        {
+            Padding = new Thickness(10, 10);
+
+            Frame frame = new Frame();
+
+            Label label = new Label();
+            label.SetBinding(Label.TextProperty, "Text"); //property of NoteModel
+            label.FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label));
+            label.VerticalTextAlignment = TextAlignment.Center;
+
+            frame.Content = label;
+            Children.Add(frame);
         }
     }
 }
