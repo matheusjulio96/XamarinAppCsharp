@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
+using XamarinAppCsharp.ViewModels;
 
 namespace XamarinAppCsharp
 {
@@ -16,6 +17,8 @@ namespace XamarinAppCsharp
         {
             BackgroundColor = Color.PowderBlue;
 
+            BindingContext = new MainPageViewModel();
+
             xamagonImage = new Image
             {
                 Source = "xamagon.png"
@@ -27,6 +30,7 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.White,
                 Margin = new Thickness(10)
             };
+            noteEditor.SetBinding(Editor.TextProperty, "NoteText");
 
             saveButton = new Button
             {
@@ -35,7 +39,7 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.Green,
                 Margin = new Thickness(10)
             };
-            saveButton.Clicked += SaveButton_Clicked;
+            saveButton.SetBinding(Button.CommandProperty, "SaveNoteCommand");
 
             deleteButton = new Button
             {
@@ -44,13 +48,29 @@ namespace XamarinAppCsharp
                 BackgroundColor = Color.Red,
                 Margin = new Thickness(10)
             };
-            deleteButton.Clicked += DeleteButton_Clicked;
+            deleteButton.SetBinding(Button.CommandProperty, "EraseNotesCommand");
 
-            textLabel = new Label
+            var collectionView = new CollectionView
             {
-                FontSize = 20,
-                Margin = new Thickness(10)
+                ItemTemplate = new DataTemplate(() =>
+                {
+                    StackLayout layout = new StackLayout();
+                    layout.Padding = new Thickness(10, 10);
+
+                    Frame frame = new Frame();
+
+                    Label label = new Label();
+                    label.SetBinding(Label.TextProperty, "Text"); //property of NoteModel
+                    label.FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label));
+                    label.VerticalTextAlignment = TextAlignment.Center;
+
+                    frame.Content = label;
+                    layout.Children.Add(frame);
+
+                    return layout;
+                })
             };
+            collectionView.SetBinding(ItemsView.ItemsSourceProperty, "NotesCollection");
 
             var grid = new Grid
             {
@@ -79,8 +99,8 @@ namespace XamarinAppCsharp
             grid.Children.Add(saveButton, 0, 2);
             grid.Children.Add(deleteButton, 1, 2);
 
-            grid.Children.Add(textLabel, 0, 3);
-            Grid.SetColumnSpan(textLabel, 2);
+            grid.Children.Add(collectionView, 0, 3);
+            Grid.SetColumnSpan(collectionView, 2);
 
             Content = grid;
         }
