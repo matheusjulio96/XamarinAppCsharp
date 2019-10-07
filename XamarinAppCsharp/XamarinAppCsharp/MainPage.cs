@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
+using XamarinAppCsharp.Models;
 using XamarinAppCsharp.ViewModels;
 
 namespace XamarinAppCsharp
@@ -94,28 +95,28 @@ namespace XamarinAppCsharp
         }
     }
 
-    internal class NotesTemplate : DataTemplate
+    class NotesTemplate : DataTemplate
     {
-        public NotesTemplate() : base(typeof(NoteLayout))
+        public NotesTemplate() : base(LoadTemplate)
         {
         }
-    }
 
-    internal class NoteLayout : StackLayout
-    {
-        public NoteLayout()
+        static StackLayout LoadTemplate()
         {
-            Padding = new Thickness(10, 10);
+            var textLabel = new Label();
+            textLabel.SetBinding(Label.TextProperty, nameof(NoteModel.Text));
 
-            Frame frame = new Frame();
+            var frame = new Frame
+            {
+                VerticalOptions = LayoutOptions.Center,
+                Content = textLabel
+            };
 
-            Label label = new Label();
-            label.SetBinding(Label.TextProperty, "Text"); //property of NoteModel
-            label.FontSize = Device.GetNamedSize(NamedSize.Title, typeof(Label));
-            label.VerticalTextAlignment = TextAlignment.Center;
-
-            frame.Content = label;
-            Children.Add(frame);
+            return new StackLayout
+            {
+                Children = { frame },
+                Padding = new Thickness(10, 10)
+            };
         }
     }
 }
