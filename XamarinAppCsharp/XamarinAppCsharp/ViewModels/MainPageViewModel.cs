@@ -47,12 +47,8 @@ namespace XamarinAppCsharp.ViewModels
 
             GetCommand = new Command(async () =>
             {
-                HttpClient client = new HttpClient();
-                string queryString = $"http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
-                var resultHorario = await client.GetAsync(queryString);
-                var strHorario = resultHorario.Content.ReadAsStringAsync().Result;
-                var horarioBloqueioCheckin = JsonConvert.DeserializeObject<Timezone>(strHorario);
-                NoteText = horarioBloqueioCheckin.datetime.ToString();
+                var timezone = await App.TimezoneManager.GetAsync();
+                if(timezone != null) NoteText = timezone.datetime.ToString();
             });
         }
 
@@ -81,10 +77,5 @@ namespace XamarinAppCsharp.ViewModels
         public Command EraseNotesCommand { get; }
         public Command NoteSelectedCommand { get; }
         public Command GetCommand { get; }
-
-        class Timezone
-        {
-            public DateTime datetime { get; set; }
-        }
     }
 }
