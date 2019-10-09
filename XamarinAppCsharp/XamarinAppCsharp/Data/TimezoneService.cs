@@ -45,7 +45,7 @@ namespace XamarinAppCsharp.Data
             {
                 result = await _client.GetAsync(url);
             }
-            catch
+            catch(Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Ocorreu um erro", $"Tente Novamente. NetworkAccess: {Connectivity.NetworkAccess}", "OK");
                 return null;
@@ -56,7 +56,20 @@ namespace XamarinAppCsharp.Data
         public async Task<byte[]> HttpGetByteArray(string url)
         {
             var result = await HttpGet(url);
-            return await result.Content.ReadAsByteArrayAsync();
+            if (result != null) 
+                return await result.Content.ReadAsByteArrayAsync();
+            else
+                return await Task.FromResult(new byte[0]);
+        }
+
+        public async Task<string> HttpGetString(string url)
+        {
+            var result = await HttpGet(url);
+            
+            if (result != null)
+                return await result.Content.ReadAsStringAsync();
+            else
+                return await Task.FromResult("");
 
         }
     }

@@ -67,7 +67,7 @@ namespace XamarinAppCsharp
             {
                 Text = "Image",
                 TextColor = Color.White,
-                BackgroundColor = Color.Yellow,
+                BackgroundColor = Color.BlueViolet,
                 Margin = new Thickness(10)
             };
             imageButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SaveImageCommand));
@@ -76,7 +76,7 @@ namespace XamarinAppCsharp
             {
                 Text = "savePref",
                 TextColor = Color.White,
-                BackgroundColor = Color.Yellow,
+                BackgroundColor = Color.BlueViolet,
                 Margin = new Thickness(10)
             };
             savePrefButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SavePrefCommand));
@@ -84,7 +84,7 @@ namespace XamarinAppCsharp
             {
                 Text = "getPref",
                 TextColor = Color.White,
-                BackgroundColor = Color.Yellow,
+                BackgroundColor = Color.BlueViolet,
                 Margin = new Thickness(10)
             };
             getPrefButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.GetPrefCommand));

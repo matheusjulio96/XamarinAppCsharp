@@ -53,8 +53,11 @@ namespace XamarinAppCsharp.ViewModels
 
             GetCommand = new Command(async () =>
             {
-                var timezone = await App.TimezoneManager.GetAsync();
-                if(timezone != null) NoteText = timezone.datetime.ToString();
+                //var timezone = await App.TimezoneManager.GetAsync();
+                //if(timezone != null) NoteText = timezone.datetime.ToString();
+
+                string str = await App.TimezoneManager.restService.HttpGetString("http://192.168.1.149:45458/api/values");
+                NoteText = str;
             });
 
             SaveImageCommand = new Command(async () =>
