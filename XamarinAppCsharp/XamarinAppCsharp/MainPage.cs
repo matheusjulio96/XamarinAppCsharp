@@ -11,13 +11,13 @@ namespace XamarinAppCsharp
     {
         Image xamagonImage;
         Editor noteEditor;
-        Button saveButton, deleteButton, getButton;
+        Button saveButton, deleteButton, getButton, imageButton, savePrefButton, getPrefButton;
 
         public MainPage()
         {
             BackgroundColor = Color.PowderBlue;
 
-            int columnCount = 3;
+            int columnCount = 2;
 
             Title = "Notes";
 
@@ -27,6 +27,7 @@ namespace XamarinAppCsharp
             {
                 Source = "xamagon.png"
             };
+            xamagonImage.SetBinding(Image.SourceProperty, nameof(MainPageViewModel.ImageSource));
 
             noteEditor = new Editor
             {
@@ -62,6 +63,31 @@ namespace XamarinAppCsharp
                 Margin = new Thickness(10)
             };
             getButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.GetCommand));
+            imageButton = new Button
+            {
+                Text = "Image",
+                TextColor = Color.White,
+                BackgroundColor = Color.Yellow,
+                Margin = new Thickness(10)
+            };
+            imageButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SaveImageCommand));
+
+            savePrefButton = new Button
+            {
+                Text = "savePref",
+                TextColor = Color.White,
+                BackgroundColor = Color.Yellow,
+                Margin = new Thickness(10)
+            };
+            savePrefButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SavePrefCommand));
+            getPrefButton = new Button
+            {
+                Text = "getPref",
+                TextColor = Color.White,
+                BackgroundColor = Color.Yellow,
+                Margin = new Thickness(10)
+            };
+            getPrefButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.GetPrefCommand));
 
             var collectionView = new CollectionView
             {
@@ -79,15 +105,15 @@ namespace XamarinAppCsharp
                 ColumnDefinitions =
                 {
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
-                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
                 },
                 RowDefinitions =
                 {
                     new RowDefinition{ Height = new GridLength(1.0, GridUnitType.Star)},
-                    new RowDefinition{ Height = new GridLength(2.5, GridUnitType.Star)},
+                    new RowDefinition{ Height = new GridLength(2.0, GridUnitType.Star)},
                     new RowDefinition{ Height = new GridLength(1.0, GridUnitType.Star)},
-                    new RowDefinition{ Height = new GridLength(2.0, GridUnitType.Star)}
+                    new RowDefinition{ Height = new GridLength(2.0, GridUnitType.Star)},
+                    new RowDefinition{ Height = new GridLength(1.0, GridUnitType.Star)}
                 }
             };
 
@@ -103,6 +129,10 @@ namespace XamarinAppCsharp
 
             grid.Children.Add(collectionView, 0, 3);
             Grid.SetColumnSpan(collectionView, columnCount);
+
+            grid.Children.Add(imageButton, 0, 4);
+            grid.Children.Add(savePrefButton, 1, 4);
+            grid.Children.Add(getPrefButton, 2, 4);
 
             Content = grid;
         }

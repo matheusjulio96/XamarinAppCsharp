@@ -23,6 +23,14 @@ namespace XamarinAppCsharp.Data
 
         public async Task<Timezone> GetTimezoneAsync()
         {
+            var resultHorario = await HttpGet(Constants.WorldtimeapiEndpoint);
+            var strHorario = resultHorario.Content.ReadAsStringAsync().Result;
+            var horario = JsonConvert.DeserializeObject<Timezone>(strHorario);
+            return horario;
+        }
+
+        public async Task<HttpResponseMessage> HttpGet(string url)
+        {
             if (Connectivity.NetworkAccess == NetworkAccess.Local || Connectivity.NetworkAccess == NetworkAccess.None)
             {
                 bool answer = await Application.Current.MainPage.DisplayAlert("Você não possui acesso a internet", null, "OK", "Configurações");
@@ -32,21 +40,24 @@ namespace XamarinAppCsharp.Data
                 }
                 return null;
             }
-            HttpClient client = new HttpClient();
-            HttpResponseMessage resultHorario = null;
+            HttpResponseMessage result = null;
             try
             {
-                resultHorario = await client.GetAsync(Constants.WorldtimeapiEndpoint);
+                result = await _client.GetAsync(url);
             }
             catch
             {
                 await Application.Current.MainPage.DisplayAlert("Ocorreu um erro", $"Tente Novamente. NetworkAccess: {Connectivity.NetworkAccess}", "OK");
                 return null;
             }
-            var strHorario = resultHorario.Content.ReadAsStringAsync().Result;
-            var horario = JsonConvert.DeserializeObject<Timezone>(strHorario);
-            return horario;
+            return result;
         }
 
+        public async Task<byte[]> HttpGetByteArray(string url)
+        {
+            var result = await HttpGet(url);
+            return await result.Content.ReadAsByteArrayAsync();
+
+        }
     }
 }

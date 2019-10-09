@@ -8,7 +8,7 @@ namespace XamarinAppCsharp.Data
 {
     public class TimezoneManager
     {
-        TimezoneService restService;
+        public TimezoneService restService;
 
         public TimezoneManager(TimezoneService service) // aqui usaria uma interface
         {

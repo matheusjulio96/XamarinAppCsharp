@@ -3,8 +3,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Net.Http;
 using System.Text;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using XamarinAppCsharp.Models;
 using XamarinAppCsharp.Views;
@@ -13,6 +15,10 @@ namespace XamarinAppCsharp.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
+        // if android
+        static private string imagePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/image123.png";
+        //Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+
         public MainPageViewModel()
         {
             Notes = new ObservableCollection<NoteModel>();
@@ -50,6 +56,34 @@ namespace XamarinAppCsharp.ViewModels
                 var timezone = await App.TimezoneManager.GetAsync();
                 if(timezone != null) NoteText = timezone.datetime.ToString();
             });
+
+            SaveImageCommand = new Command(async () =>
+            {
+                var image = await App.TimezoneManager.restService.HttpGetByteArray("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
+
+                
+                string tempFileName = imagePath;
+                File.WriteAllBytes(tempFileName, image);
+
+                var imageAsBytes = File.ReadAllBytes(tempFileName);
+
+                ImageSource = ImageSource.FromStream(() => new MemoryStream(imageAsBytes));
+            });
+
+            GetPrefCommand = new Command(() =>
+            {
+                var anUserPref = Preferences.Get("anUserPref", 0);
+                NoteText = anUserPref.ToString();
+            });
+
+            SavePrefCommand = new Command(() =>
+            {
+                int anUserPref = 0;
+                if (int.TryParse(NoteText, out anUserPref))
+                {
+                    Preferences.Set("anUserPref", anUserPref);
+                }
+            });
         }
 
         public ObservableCollection<NoteModel> Notes { get; set; }
@@ -72,10 +106,23 @@ namespace XamarinAppCsharp.ViewModels
             } 
         }
 
+        ImageSource imageSource = ImageSource.FromStream(() => new MemoryStream(File.ReadAllBytes(imagePath)));
+        public ImageSource ImageSource
+        {
+            get => imageSource;
+            set
+            {
+                SetProperty(ref imageSource, value, nameof(ImageSource));
+            }
+        }
+
 
         public Command SaveNoteCommand { get; }
         public Command EraseNotesCommand { get; }
         public Command NoteSelectedCommand { get; }
         public Command GetCommand { get; }
+        public Command SaveImageCommand { get; }
+        public Command GetPrefCommand { get; }
+        public Command SavePrefCommand { get; }
     }
 }
