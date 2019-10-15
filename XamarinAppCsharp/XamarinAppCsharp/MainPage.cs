@@ -135,6 +135,32 @@ namespace XamarinAppCsharp
             grid.Children.Add(getPrefButton, 2, 4);
 
             Content = grid;
+
+
+
+            // para trocar a cor da seleção
+            Resources.Add(new Style(typeof(StackLayout))
+            {
+                Setters = {
+                    new Setter {
+                        Property = VisualStateManager.VisualStateGroupsProperty,
+                        Value = new VisualStateGroupList() {
+                            new VisualStateGroup
+                            {
+                                Name = "CommonStates",
+                                States = {
+                                    new VisualState { Name = VisualStateManager.CommonStates.Normal },
+                                    new VisualState {
+                                        Name = VisualStateManager.CommonStates.Selected,
+                                        Setters = { new Setter { Property = StackLayout.BackgroundColorProperty, Value = Color.LightSkyBlue}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 
